@@ -126,7 +126,7 @@ function setup() {
 
 function draw() {
     // if (ownerList != 0 && recentSoldDate != 0) {
-    if (![ownerList, recentSoldDate, currentDate, expireDate].includes(0)) {
+    if (![ownerList, recentSoldDate, currentDate, expireDate, ownerNum].includes(0)) {
         askVote();
         goChaos() ? chaosMode() : normalMode();
     } else {
