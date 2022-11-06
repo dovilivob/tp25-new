@@ -16,11 +16,11 @@ let showVote = false;
 let refused = false;
 
 let goChaos = () => {
-    return currentDate > expireDate && ownerNum == TARGET_NUM;
+    return currentDate > expireDate && ownerNum >= TARGET_NUM;
 }
 
 let canVote = () => {
-    return currentDate <= expireDate && ownerNum == TARGET_NUM;
+    return currentDate <= expireDate && ownerNum >= TARGET_NUM;
 }
 
 let randInt = range => Math.floor(Math.random() * range);
@@ -126,7 +126,7 @@ function setup() {
 
 function draw() {
     // if (ownerList != 0 && recentSoldDate != 0) {
-    if (![ownerList, recentSoldDate, currentDate, expireDate, ownerNum].includes(0)) {
+    if (![ownerList, recentSoldDate, currentDate, expireDate].includes(0)) {
         askVote();
         goChaos() ? chaosMode() : normalMode();
     } else {

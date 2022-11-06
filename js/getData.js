@@ -1,5 +1,5 @@
 const contractADDR = 'KT1AFq5XorPduoYyWxs5gEyrFK6fVjJVbtCj';
-// const uniqueTAG = 'TBC25001';
+// const uniqueTAG = 'TBC25003';
 // const artistADDR = 'tz1Z8Xwm2qWnWWtL3MJ7T3A9uLmaQJiy8Uct';
 const uniqueTAG = 'dvu006';
 const artistADDR = 'tz1feSswgqJc1YiCdvqaBRZyqcuW8E3Kz6Re';
