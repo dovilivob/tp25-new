@@ -1,4 +1,6 @@
-const TEST_OWNER_NUM = -1;
+const TEST_OWNER_NUM = 12;
+const TEST_CURRENT_DAY = new Date('2022-10-3');
+// const TEST_CURRENT_DAY = -1;
 const TOTAL_IMG_NUM = 24;
 const TARGET_NUM = TOTAL_IMG_NUM / 2;
 const BG_COLOR = 255;
@@ -11,11 +13,11 @@ let showVote = false;
 let refused = false;
 
 let goChaos = () => {
-    return currentDate > expireDate && ownerNum >= TARGET_NUM;
+    return currentDate > expireDate && ownerNum == TARGET_NUM;
 }
 
 let canVote = () => {
-    return currentDate <= expireDate && ownerNum >= TARGET_NUM;
+    return currentDate <= expireDate && ownerNum == TARGET_NUM;
 }
 
 let randInt = range => Math.floor(Math.random() * range);
@@ -98,9 +100,12 @@ function chaosMode() {
 
 function setup() {
     if (TEST_OWNER_NUM != -1) ownerNum = TEST_OWNER_NUM;
+    if (TEST_CURRENT_DAY != -1) currentDate = TEST_CURRENT_DAY;
+
     SIZE = (windowWidth > windowHeight) ? windowHeight * .95 : windowWidth * .95;
     blendMode(BLEND);
     background(BG_COLOR);
+
     mainCanvas = createCanvas(SIZE, SIZE);
     mainCanvas.parent('main');
 }
