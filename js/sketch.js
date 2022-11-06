@@ -16,7 +16,7 @@ let canVote = () => {
     return viewerOwnedToken - votedList[URL_viewer] > 0;
 }
 
-let randInt = range => Math.floor(Math.random() * range);
+let rand_int = range => Math.floor(Math.random() * range);
 
 function preload() {
     for (let i = 0; i < TOTAL_IMG_NUM; i++) {
@@ -69,10 +69,10 @@ function normalMode() {
 function chaosMode() {
     frameRate(20);
     filter(BLUR, 1.5);
-    let randNum = (ownerNum != 0) ? randInt(ownerNum * 2 - 1) : 0;
+    let randNum = (ownerNum != 0) ? rand_int(ownerNum * 2 - 1) : 0;
 
     // let bSeed = randNum % 4;
-    let bSeed = randInt(4);
+    let bSeed = rand_int(4);
     switch (bSeed) {
         case 0:
             blendMode(DARKEST);
