@@ -1,8 +1,8 @@
 const contractADDR = 'KT1AFq5XorPduoYyWxs5gEyrFK6fVjJVbtCj';
-const uniqueTAG = 'TBC25001';
-const artistADDR = 'tz1Z8Xwm2qWnWWtL3MJ7T3A9uLmaQJiy8Uct';
-// const uniqueTAG = 'dvu006';
-// const artistADDR = 'tz1feSswgqJc1YiCdvqaBRZyqcuW8E3Kz6Re';
+// const uniqueTAG = 'TBC25001';
+// const artistADDR = 'tz1Z8Xwm2qWnWWtL3MJ7T3A9uLmaQJiy8Uct';
+const uniqueTAG = 'dvu006';
+const artistADDR = 'tz1feSswgqJc1YiCdvqaBRZyqcuW8E3Kz6Re';
 
 let OBJKT_ID = 0;
 let ownerList = 0;
@@ -28,24 +28,10 @@ else console.log("Can't get viewer ID by url");
 GetDataSequence();
 
 async function GetDataSequence() {
-    // if (URL_objktId != null) {
-    //     OBJKT_ID = URL_objktId;
-    //     console.log(`Got Token ID by url: ${URL_objktId}`);
-    // } else {
-    //     console.log("Got Token ID by Tag: " + OBJKT_ID);
-    // }
     await GetTokenDataByTag();
-    // await GetVotedList();
     console.log("All Data is Ready");
     await sleep(3000);
 }
-
-// async function GetVotedList() {
-//     let response = await fetch('https://tp25.2enter.art/assets/data.json');
-//     let dataJson = await response.json();
-//     votedList = dataJson.auths;
-//     console.log(`Voted Owner List: ${votedList}`);
-// }
 
 
 async function GetTokenDataByTag() {

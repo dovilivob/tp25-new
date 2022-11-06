@@ -1,6 +1,9 @@
 const TEST_OWNER_NUM = 12;
-const TEST_CURRENT_DAY = new Date('2022-10-3');
-// const TEST_CURRENT_DAY = -1;
+const TEST_CURRENT_DAY = -1;
+const TEST_EXPIRE_DAY = -1;
+// const TEST_CURRENT_DAY = new Date('2022-11-2');
+// const TEST_EXPIRE_DAY = new Date('2022-11-2');
+
 const TOTAL_IMG_NUM = 24;
 const TARGET_NUM = TOTAL_IMG_NUM / 2;
 const BG_COLOR = 255;
@@ -32,12 +35,14 @@ function preload() {
 function askVote() {
     if (canVote()) {
         let askVoteHTML = document.querySelector('.ask-vote');
+        let countDown = document.querySelector('#count-down');
         if (!refused) {
             if (!showVote) {
                 askVoteHTML.style.display = 'none';
             } else {
                 frameRate(20);
                 askVoteHTML.style.display = 'block';
+                countDown.innerHTML = `倒數 ${Math.floor((expireDate - currentDate) / (1000 * 3600 * 24))} 天`;
             }
         } else {
             askVoteHTML.style.display = 'none';
@@ -98,20 +103,30 @@ function chaosMode() {
     blendMode(SOFT_LIGHT);
 }
 
+function showStatus() {
+    if (goChaos()) console.log('Vote End');
+    else if (canVote()) console.log('Voting');
+    else console.log("Haven't Start Yet");
+}
+
 function setup() {
     if (TEST_OWNER_NUM != -1) ownerNum = TEST_OWNER_NUM;
     if (TEST_CURRENT_DAY != -1) currentDate = TEST_CURRENT_DAY;
+    if (TEST_EXPIRE_DAY != -1) expireDate = TEST_EXPIRE_DAY;
 
-    SIZE = (windowWidth > windowHeight) ? windowHeight * .95 : windowWidth * .95;
+    SIZE = (windowWidth > windowHeight) ? windowHeight * .98 : windowWidth * .98;
     blendMode(BLEND);
     background(BG_COLOR);
 
     mainCanvas = createCanvas(SIZE, SIZE);
     mainCanvas.parent('main');
+
+    showStatus();
 }
 
 function draw() {
-    if (ownerList != 0 && recentSoldDate != 0) {
+    // if (ownerList != 0 && recentSoldDate != 0) {
+    if (![ownerList, recentSoldDate, currentDate, expireDate].includes(0)) {
         askVote();
         goChaos() ? chaosMode() : normalMode();
     } else {
