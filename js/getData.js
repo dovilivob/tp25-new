@@ -8,6 +8,7 @@ let OBJKT_ID = 0;
 let ownerList = 0;
 let votedList = 0;
 let ownerNum = 0;
+
 let recentSoldDate = 0;
 let currentDate = 0;
 let expireDate = 0;
@@ -61,6 +62,10 @@ async function GetTokenDataByTag() {
     currentDate = new Date();
     expireDate = new Date(recentSoldDate);
     expireDate.setDate(expireDate.getDate() + 7);
+
+    console.log(`Current Date:\n${currentDate.getMonth()}-${currentDate.getDate()}`);
+    console.log(`Last Sold Date:\n${recentSoldDate.getMonth()}-${recentSoldDate.getDate()}`);
+    console.log(`Vote Expire Date:\n${expireDate.getMonth()}-${expireDate.getDate()}`);
 
     Object.keys(ownerList).forEach(key => {
         if (![artistADDR, 'KT1Dn3sambs7KZGW88hH2obZeSzfmCmGvpFo'].includes(key)) {
