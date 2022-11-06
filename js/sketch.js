@@ -10,13 +10,15 @@ let mainCanvas;
 let showVote = false;
 let refused = false;
 
-let canVote = () => {
-    if (ownerList[URL_viewer] == undefined) viewerOwnedToken = 1;
-    else viewerOwnedToken = ownerList[URL_viewer];
-    return viewerOwnedToken - votedList[URL_viewer] > 0;
+let goChaos = () => {
+    return currentDate > expireDate && ownerNum >= TARGET_NUM;
 }
 
-let rand_int = range => Math.floor(Math.random() * range);
+let canVote = () => {
+    return currentDate <= expireDate && ownerNum >= TARGET_NUM;
+}
+
+let randInt = range => Math.floor(Math.random() * range);
 
 function preload() {
     for (let i = 0; i < TOTAL_IMG_NUM; i++) {
@@ -26,16 +28,18 @@ function preload() {
 }
 
 function askVote() {
-    let askVoteHTML = document.querySelector('.ask-vote');
-    if (!refused) {
-        if (!showVote) {
-            askVoteHTML.style.display = 'none';
+    if (canVote()) {
+        let askVoteHTML = document.querySelector('.ask-vote');
+        if (!refused) {
+            if (!showVote) {
+                askVoteHTML.style.display = 'none';
+            } else {
+                frameRate(20);
+                askVoteHTML.style.display = 'block';
+            }
         } else {
-            frameRate(20);
-            askVoteHTML.style.display = 'block';
+            askVoteHTML.style.display = 'none';
         }
-    } else {
-        askVoteHTML.style.display = 'none';
     }
 }
 
@@ -69,10 +73,10 @@ function normalMode() {
 function chaosMode() {
     frameRate(20);
     filter(BLUR, 1.5);
-    let randNum = (ownerNum != 0) ? rand_int(ownerNum * 2 - 1) : 0;
+    let randNum = (ownerNum != 0) ? randInt(ownerNum * 2 - 1) : 0;
 
     // let bSeed = randNum % 4;
-    let bSeed = rand_int(4);
+    let bSeed = randInt(4);
     switch (bSeed) {
         case 0:
             blendMode(DARKEST);
@@ -94,9 +98,7 @@ function chaosMode() {
 
 function setup() {
     if (TEST_OWNER_NUM != -1) ownerNum = TEST_OWNER_NUM;
-    SIZE = (windowWidth > windowHeight)
-        ? windowHeight * .95
-        : windowWidth * .95;
+    SIZE = (windowWidth > windowHeight) ? windowHeight * .95 : windowWidth * .95;
     blendMode(BLEND);
     background(BG_COLOR);
     mainCanvas = createCanvas(SIZE, SIZE);
@@ -104,8 +106,10 @@ function setup() {
 }
 
 function draw() {
-    if (ownerList != 0 && votedList != 0) {
+    if (ownerList != 0 && recentSoldDate != 0) {
         askVote();
-        canVote() ? normalMode() : chaosMode();
+        goChaos() ? chaosMode() : normalMode();
+    } else {
+        console.log('Not Yet!!');
     }
 }
