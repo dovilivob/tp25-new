@@ -94,7 +94,7 @@ function chaosMode() {
 
 function setup() {
     if (TEST_OWNER_NUM != -1) ownerNum = TEST_OWNER_NUM;
-    canvasSize = windowWidth;
+    canvasSize = (windowWidth > windowHeight) ? windowHeight : windowWidth;
     blendMode(BLEND)
     background(BG_COLOR)
     mainCanvas = createCanvas(canvasSize, canvasSize);
