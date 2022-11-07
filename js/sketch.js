@@ -1,19 +1,19 @@
-const TEST_OWNER_NUM = 12;
+const TEST_OWNER_NUM = -1;
 const TEST_CURRENT_DAY = -1;
 const TEST_EXPIRE_DAY = -1;
-// const TEST_CURRENT_DAY = new Date('2022-11-2');
-// const TEST_EXPIRE_DAY = new Date('2022-11-2');
+// const TEST_CURRENT_DAY = new Date('8028-11-12');
+// const TEST_EXPIRE_DAY = new Date('2022-12-01');
 
 const TOTAL_IMG_NUM = 24;
 const TARGET_NUM = TOTAL_IMG_NUM / 2;
 const BG_COLOR = 255;
 
-let SIZE;
+let SIZE, mainCanvas;
 let currentImage = 0;
 let imgs = [];
-let mainCanvas;
 let showVote = false;
 let refused = false;
+let initialized = false;
 
 let goChaos = () => {
     return currentDate > expireDate && ownerNum >= TARGET_NUM;
@@ -26,32 +26,32 @@ let canVote = () => {
 let randInt = range => Math.floor(Math.random() * range);
 
 function preload() {
+    let img;
     for (let i = 0; i < TOTAL_IMG_NUM; i++) {
-        let img = loadImage(`./static/imgs/${(i < 10) ? '0' + i : i}.jpg`);
+        img = loadImage(`./static/imgs/${(i < 10) ? '0' + i.toString() : i}.jpg`);
         imgs.push(img);
     }
+    console.log('Preload Done!!!')
 }
 
 function askVote() {
-    if (canVote()) {
-        let askVoteHTML = document.querySelector('.ask-vote');
-        let countDown = document.querySelector('#count-down');
-        if (!refused) {
-            if (!showVote) {
-                askVoteHTML.style.display = 'none';
-            } else {
-                frameRate(20);
-                askVoteHTML.style.display = 'block';
-                countDown.innerHTML = `倒數 ${Math.floor((expireDate - currentDate) / (1000 * 3600 * 24))} 天`;
-            }
-        } else {
+    let askVoteHTML = document.querySelector('.ask-vote');
+    let countDown = document.querySelector('#count-down');
+    if (!refused) {
+        if (!showVote) {
             askVoteHTML.style.display = 'none';
+        } else {
+            frameRate(20);
+            askVoteHTML.style.display = 'block';
+            countDown.innerHTML = `倒數 ${Math.floor((expireDate - currentDate) / (1000 * 3600 * 24))} 天`;
         }
+    } else {
+        askVoteHTML.style.display = 'none';
     }
 }
 
 function goUrl() {
-    window.open(`https://tp25.2enter.art/entry?addr=${URL_viewer}`, '_blank');
+    window.open(`https://tp25.2enter.art/entry?addr=${URL_viewer ?? 'guest'}`, '_blank');
     refused = true;
 }
 
@@ -71,7 +71,6 @@ function normalMode() {
         currentImage = 0;
     }
 
-    // console.log(ownerNum, currentImage)
     image(imgs[currentImage], 0, 0, SIZE, SIZE);
     image(imgs[currentImage + 1], 0, 0, SIZE, SIZE);
     currentImage += 2;
@@ -82,7 +81,6 @@ function chaosMode() {
     filter(BLUR, 1.5);
     let randNum = (ownerNum != 0) ? randInt(ownerNum * 2 - 1) : 0;
 
-    // let bSeed = randNum % 4;
     let bSeed = randInt(4);
     switch (bSeed) {
         case 0:
@@ -106,14 +104,20 @@ function chaosMode() {
 function showStatus() {
     if (goChaos()) console.log('Vote End');
     else if (canVote()) console.log('Voting');
-    else console.log("Haven't Start Yet");
+    else console.log("Vote haven't Start Yet");
+    console.log(`Owner Number:\n${ownerNum}`);
+    console.log(`Current Date:\n${currentDate.getMonth()}-${currentDate.getDate()}`);
+    console.log(`Last Sold Date:\n${recentSoldDate.getMonth()}-${recentSoldDate.getDate()}`);
+    console.log(`Vote Expire Date:\n${expireDate.getMonth()}-${expireDate.getDate()}`);
+    console.log(`Viewer:\n${URL_viewer}`);
+    Object.keys(ownerList).forEach(key => {
+        if (![artistADDR, 'KT1Dn3sambs7KZGW88hH2obZeSzfmCmGvpFo'].includes(key)) {
+            console.log(key + ' --> ' + ownerList[key])
+        }
+    })
 }
 
-function setup() {
-    if (TEST_OWNER_NUM != -1) ownerNum = TEST_OWNER_NUM;
-    if (TEST_CURRENT_DAY != -1) currentDate = TEST_CURRENT_DAY;
-    if (TEST_EXPIRE_DAY != -1) expireDate = TEST_EXPIRE_DAY;
-
+function initializeField() {
     SIZE = (windowWidth > windowHeight) ? windowHeight * .98 : windowWidth * .98;
     blendMode(BLEND);
     background(BG_COLOR);
@@ -122,12 +126,22 @@ function setup() {
     mainCanvas.parent('main');
 
     showStatus();
+    initialized = true;
+}
+
+function setup() {
+    frameRate(0.3);
+    console.log('Start Running');
 }
 
 function draw() {
-    // if (ownerList != 0 && recentSoldDate != 0) {
-    if (![ownerList, recentSoldDate, currentDate, expireDate].includes(0)) {
-        askVote();
+    if (TEST_OWNER_NUM != -1) ownerNum = TEST_OWNER_NUM;
+    if (TEST_CURRENT_DAY != -1) currentDate = TEST_CURRENT_DAY;
+    if (TEST_EXPIRE_DAY != -1) expireDate = TEST_EXPIRE_DAY;
+
+    if (![ownerList, recentSoldDate, currentDate, expireDate, ownerNum].includes(-1)) {
+        if (!initialized) initializeField();
+        if (canVote()) askVote();
         goChaos() ? chaosMode() : normalMode();
     } else {
         console.log('Not Yet!!');
