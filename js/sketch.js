@@ -8,22 +8,22 @@ const TOTAL_IMG_NUM = 24;
 const TARGET_NUM = TOTAL_IMG_NUM / 2;
 const BG_COLOR = 255;
 
-let SIZE, mainCanvas;
+let main_size, main_canvas;
 let currentImage = 0;
 let imgs = [];
-let showVote = false;
+let show_vote = false;
 let refused = false;
 let initialized = false;
 
-let goChaos = () => {
+let go_chaos = () => {
     return currentDate > expireDate && ownerNum >= TARGET_NUM;
 }
 
-let canVote = () => {
+let can_vote = () => {
     return currentDate <= expireDate && ownerNum >= TARGET_NUM;
 }
 
-let randInt = range => Math.floor(Math.random() * range);
+let rand_int = range => Math.floor(Math.random() * range);
 
 function preload() {
     let img;
@@ -34,54 +34,54 @@ function preload() {
     console.log('Preload Done!!!')
 }
 
-function askVote() {
-    let askVoteHTML = document.querySelector('.ask-vote');
+function ask_vote() {
+    let ask_voteHTML = document.querySelector('.ask-vote');
     let countDown = document.querySelector('#count-down');
     if (!refused) {
-        if (!showVote) {
-            askVoteHTML.style.display = 'none';
+        if (!show_vote) {
+            ask_voteHTML.style.display = 'none';
         } else {
             frameRate(20);
-            askVoteHTML.style.display = 'block';
+            ask_voteHTML.style.display = 'block';
             countDown.innerHTML = `倒數 ${Math.floor((expireDate - currentDate) / (1000 * 3600 * 24))} 天`;
         }
     } else {
-        askVoteHTML.style.display = 'none';
+        ask_voteHTML.style.display = 'none';
     }
 }
 
-function goUrl() {
+function go_url() {
     window.open(`https://tp25.2enter.art/entry?addr=${URL_viewer ?? 'guest'}`, '_blank');
     refused = true;
 }
 
-function goBack() {
+function go_back() {
     console.log('Refused!!!')
-    showVote = false;
+    show_vote = false;
     refused = true;
 }
 
-function normalMode() {
+function normal_mode() {
     frameRate(1);
     blendMode(DARKEST);
     if (currentImage + 2 > ownerNum * 2 || currentImage == 24) {
         blendMode(BLEND);
         background(BG_COLOR);
-        showVote = true;
+        show_vote = true;
         currentImage = 0;
     }
 
-    image(imgs[currentImage], 0, 0, SIZE, SIZE);
-    image(imgs[currentImage + 1], 0, 0, SIZE, SIZE);
+    image(imgs[currentImage], 0, 0, main_size, main_size);
+    image(imgs[currentImage + 1], 0, 0, main_size, main_size);
     currentImage += 2;
 }
 
-function chaosMode() {
+function chaos_mode() {
     frameRate(20);
     filter(BLUR, 1.5);
-    let randNum = (ownerNum != 0) ? randInt(ownerNum * 2 - 1) : 0;
+    let randNum = (ownerNum != 0) ? rand_int(ownerNum * 2 - 1) : 0;
 
-    let bSeed = randInt(4);
+    let bSeed = rand_int(4);
     switch (bSeed) {
         case 0:
             blendMode(DARKEST);
@@ -97,13 +97,13 @@ function chaosMode() {
             break;
     }
 
-    image(imgs[randNum], 0, 0, SIZE, SIZE);
+    image(imgs[randNum], 0, 0, main_size, main_size);
     blendMode(SOFT_LIGHT);
 }
 
-function showStatus() {
-    if (goChaos()) console.log('Vote End');
-    else if (canVote()) console.log('Voting');
+function show_status() {
+    if (go_chaos()) console.log('Vote End');
+    else if (can_vote()) console.log('Voting');
     else console.log("Vote haven't Start Yet");
     console.log(`Owner Number:\n${ownerNum}`);
     console.log(`Current Date:\n${currentDate.getMonth()}-${currentDate.getDate()}`);
@@ -117,20 +117,20 @@ function showStatus() {
     })
 }
 
-function initializeField() {
-    SIZE = (windowWidth > windowHeight) ? windowHeight * .98 : windowWidth * .98;
+function initialize_field() {
+    main_size = (windowWidth > windowHeight) ? windowHeight * .98 : windowWidth * .98;
     blendMode(BLEND);
     background(BG_COLOR);
 
-    mainCanvas = createCanvas(SIZE, SIZE);
-    mainCanvas.parent('main');
+    main_canvas = createCanvas(main_size, main_size);
+    main_canvas.parent('main');
 
-    showStatus();
+    show_status();
     initialized = true;
 }
 
 function setup() {
-    frameRate(0.3);
+    frameRate(0.5);
     console.log('Start Running');
 }
 
@@ -140,9 +140,9 @@ function draw() {
     if (TEST_EXPIRE_DAY != -1) expireDate = TEST_EXPIRE_DAY;
 
     if (![ownerList, recentSoldDate, currentDate, expireDate, ownerNum].includes(-1)) {
-        if (!initialized) initializeField();
-        if (canVote()) askVote();
-        goChaos() ? chaosMode() : normalMode();
+        if (!initialized) initialize_field();
+        if (can_vote()) ask_vote();
+        go_chaos() ? chaos_mode() : normal_mode();
     } else {
         console.log('Not Yet!!');
     }

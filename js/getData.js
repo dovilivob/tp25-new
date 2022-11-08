@@ -55,10 +55,6 @@ async function GetTokenDataByTag() {
     })
     ownerNum++;
 
-    // console.log(`Owner List: ${ownerList}`);
-    // console.log(`Owner Number: ${ownerNum}`);
-    // console.log(`Recently Sold Time: ${recentSoldDate}`);
-
     recentSoldDate = new Date(recentSoldDate);
     currentDate = new Date();
     expireDate = new Date(recentSoldDate);
