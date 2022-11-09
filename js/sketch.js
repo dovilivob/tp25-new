@@ -1,6 +1,7 @@
 'use strict';
 
-const TEST_OWNER_NUM = 12;
+const TEST_OWNER_NUM = -1;
+const TEST_TOKEN_NUM = -1;
 const TEST_CURRENT_DAY = -1;
 const TEST_EXPIRE_DAY = -1;
 // const TEST_CURRENT_DAY = new Date('8028-11-12');
@@ -37,22 +38,22 @@ function preload() {
         img = loadImage(`./static/imgs/${(i < 10) ? '0' + i.toString() : i}.jpg`);
         imgs.push(img);
     }
-    console.log('Preload Done!!!')
+    console.log('Preload Done !!!');
 }
 
 function ask_vote() {
-    let ask_voteHTML = document.querySelector('.ask-vote');
-    let countDown = document.querySelector('#count-down');
+    let ask_vote_HTML = document.querySelector('.ask-vote');
+    let count_down_HTML = document.querySelector('#count-down');
     if (!refused) {
         if (!show_vote) {
-            ask_voteHTML.style.display = 'none';
+            ask_vote_HTML.style.display = 'none';
         } else {
             frameRate(20);
-            ask_voteHTML.style.display = 'block';
-            countDown.innerHTML = `倒數 ${Math.floor((expireDate - currentDate) / (1000 * 3600 * 24))} 天`;
+            ask_vote_HTML.style.display = 'block';
+            count_down_HTML.innerHTML = `倒數 ${Math.floor((expireDate - currentDate) / (1000 * 3600 * 24))} 天`;
         }
     } else {
-        ask_voteHTML.style.display = 'none';
+        ask_vote_HTML.style.display = 'none';
     }
 }
 
@@ -68,22 +69,22 @@ function go_back() {
 }
 
 function normal_mode() {
-    frameRate(1);
-    blendMode(DARKEST);
-    if (currentImage + 2 > ownerAmount * 2 || currentImage == 24) {
+    frameRate(1.95)
+    if (currentImage > ownerAmount * 2 || currentImage == 24) {
+        console.log('Image Resetting...')
         blendMode(BLEND);
         background(BG_COLOR);
         show_vote = true;
         currentImage = 0;
     }
-
+    blendMode(DARKEST);
     image(imgs[currentImage], 0, 0, main_size, main_size);
-    image(imgs[currentImage + 1], 0, 0, main_size, main_size);
-    currentImage += 2;
+    // image(imgs[currentImage + 1], 0, 0, main_size, main_size);
+    currentImage += 1;
 }
 
 function chaos_mode() {
-    frameRate(20);
+    frameRate(5);
     filter(BLUR, 1.5);
     let randNum = (ownerAmount != 0) ? rand_int(ownerAmount * 2 - 1) : 0;
 
@@ -108,27 +109,28 @@ function chaos_mode() {
 }
 
 function show_status() {
-    if (go_chaos()) console.log('| STATUS:\tVOTE END\t\t\t\t|');
-    else if (can_vote()) console.log('| STATUS:\tVOTING\t\t\t\t|');
-    else console.log("| STATUS:\tVOTE HAVEN'T START YET\t\t\t\t|");
+    console.log(`Viewer:\t${URL_viewer}`);
+    console.log('|-------------------------------|');
+    if (go_chaos()) console.log('| STATUS:\t\t\tCHAOS\t\t|');
+    else if (can_vote()) console.log('| STATUS:\t\t\tVOTING\t\t|');
+    else console.log("| STATUS:\t\t\tNOT YET\t\t|");
     console.log(`| Owner Amount:\t\t${ownerAmount}\t\t\t|`);
     console.log(`| Token Amount:\t\t${tokenAmount}\t\t\t|`);
-    console.log(`| Current Date:\t\t${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}\t|`);
-    console.log(`| Last Sold Date:\t${recentSoldDate.getFullYear()}-${recentSoldDate.getMonth()}-${recentSoldDate.getDate()}\t|`);
-    console.log(`| Vote Expire Date:\t${expireDate.getFullYear()}-${expireDate.getMonth()}-${expireDate.getDate()}\t|`);
-    console.log(`| Viewer:\t\t\t${URL_viewer}\t\t|`);
+    console.log(`| Current Date:\t\t${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}\t|`);
+    console.log(`| Last Sold Date:\t${recentSoldDate.getFullYear()}-${recentSoldDate.getMonth() + 1}-${recentSoldDate.getDate()}\t|`);
+    console.log(`| Vote Expire Date:\t${expireDate.getFullYear()}-${expireDate.getMonth() + 1}-${expireDate.getDate()}\t|`);
     console.log('|-----------------------------------------------|');
     console.log("| Owner List:\t\t\t\t\t\t\t\t\t|");
     Object.keys(ownerList).forEach(key => {
         if (![artistADDR, 'KT1Dn3sambs7KZGW88hH2obZeSzfmCmGvpFo'].includes(key)) {
-            console.log(`| ${key}\t-->\t${ownerList[key]}\t|`)
+            console.log(`| ${key}\t-->\t${ownerList[key]}\t|`);
         }
     })
     console.log('|-----------------------------------------------|');
 }
 
 function initialize_field() {
-    main_size = (windowWidth > windowHeight) ? windowHeight * .98 : windowWidth * .98;
+    main_size = (windowWidth > windowHeight) ? windowHeight : windowWidth;
     blendMode(BLEND);
     background(BG_COLOR);
 
@@ -146,6 +148,7 @@ function setup() {
 
 function draw() {
     if (TEST_OWNER_NUM != -1) ownerAmount = TEST_OWNER_NUM;
+    if (TEST_TOKEN_NUM != -1) tokenAmount = TEST_TOKEN_NUM;
     if (TEST_CURRENT_DAY != -1) currentDate = TEST_CURRENT_DAY;
     if (TEST_EXPIRE_DAY != -1) expireDate = TEST_EXPIRE_DAY;
 

@@ -3,21 +3,36 @@
 }
 
 body {
-  background-color: rgb(203, 204, 205);
-  /* font-family: "Noto Serif TC", serif; */
+  background-color: rgb(32, 33, 36);
 }
 
-a {
-  /* font-family: "Noto Serif TC", serif; */
+.question a {
+  color: rgb(77, 77, 77);
+  font-size: 1rem;
   font-weight: bolder;
 }
 
-h3 {
+.question h5 {
+  color: black;
+  margin: 0;
   font-size: 2rem;
+  font-weight: bolder;
 }
 
-h4 {
-  font-size: 1rem;
+@media screen and (max-width: 768px) {
+  .question a {
+    color: rgb(77, 77, 77);
+    margin: 0;
+    font-size: 2.3vw;
+    font-weight: light;
+  }
+
+  .question h5 {
+    color: black;
+    margin: 0;
+    font-size: 6vw;
+    font-weight: light;
+  }
 }
 
 .ask-vote {
@@ -52,23 +67,26 @@ canvas {
 button {
   font-size: 1.3rem;
   border-radius: 48%;
-  padding: 4vw;
+  padding: 3.8vw;
   border: none;
   margin: auto;
+  margin-top: 5px;
   background-color: rgb(22, 22, 22);
   color: white;
   cursor: pointer;
 }
 
+button a {
+  color: white;
+}
+
 button:hover {
-  color: rgb(103, 27, 70);
+  color: rgb(93, 21, 62);
   background-color: rgba(100, 100, 100, 0.2);
 }
 
 #count-down {
-  font-size: 1rem;
   color: rgb(171, 26, 0);
-  font-weight: bolder;
 }
 
 * {
