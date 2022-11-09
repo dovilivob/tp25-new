@@ -5,10 +5,10 @@ const artistADDR = 'tz1Z8Xwm2qWnWWtL3MJ7T3A9uLmaQJiy8Uct';
 // const uniqueTAG = 'dvu006';
 // const artistADDR = 'tz1feSswgqJc1YiCdvqaBRZyqcuW8E3Kz6Re';
 
-let OBJKT_ID = 0;
 let ownerList = -1;
 let votedList = -1;
-let ownerNum = -1;
+let ownerAmount = -1;
+let tokenAmount = -1;
 
 let recentSoldDate = -1;
 let currentDate = -1;
@@ -19,19 +19,20 @@ console.log(current_URL);
 
 const search = new URLSearchParams(window.location.search);
 
-const URL_viewer = search.get('viewer');
-const URL_objktId = search.get('objkt');
+const URL_viewer = search.get('viewer') ?? 'guest';
 
-if (URL_viewer != null) console.log(`Got viewer ADDR by url ${URL_viewer}`);
-else console.log("Can't get viewer ID by url");
-if (URL_objktId != null) console.log(`Got objkt ID by url ${URL_objktId}`);
-else console.log("Can't get objkt ID by url");
 
-GetDataSequence();
+$(window).on('load', () => {
+    if (URL_viewer != null) console.log(`Got viewer ADDR by url: ${URL_viewer}`);
+    else console.log("Can't get viewer ID by url");
+    // else console.log("Can't get objkt ID by url");
+    GetDataSequence();
+})
 
 async function GetDataSequence() {
     await GetTokenDataByTag();
     console.log("All Data is Ready");
+    console.log('|-------------------------------|');
     await sleep(3000);
 }
 
@@ -41,19 +42,19 @@ async function GetTokenDataByTag() {
     let response = await fetch(apiUrl);
     let dataJson = await response.json();
     let objktJson = await dataJson.tokens[0];
+
     // console.log(objktJson);
-    OBJKT_ID = await objktJson.tokenId;
     ownerList = await objktJson.owners;
-    recentSoldDate = await objktJson.recentlySoldTime ?? '9999-08-18';
+    recentSoldDate = await objktJson.recentlySoldTime ?? '99999-08-18';
     recentSoldDate = await recentSoldDate.split('T')[0];
+    tokenAmount = await objktJson.amount;
 
     Object.keys(ownerList).forEach(key => {
         if (![artistADDR, 'KT1Dn3sambs7KZGW88hH2obZeSzfmCmGvpFo'].includes(key)) {
-            console.log(key + ' --> ' + ownerList[key]);
-            ownerNum += ownerList[key];
+            ownerAmount += ownerList[key];
         }
     })
-    ownerNum++;
+    ownerAmount++;
 
     recentSoldDate = new Date(recentSoldDate);
     currentDate = new Date();
